@@ -4,8 +4,6 @@
 
 ##### 704.二分查找    https://leetcode.cn/problems/binary-search/
 
-二分查找有效
-
 ```c++
 class Solution {
 public:
