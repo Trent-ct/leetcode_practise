@@ -2,7 +2,7 @@
 
 ## 1、有效的括号
 
-#####  **20.有效的括号 **     [20. 有效的括号 - 力扣（LeetCode）](https://leetcode.cn/problems/valid-parentheses/)
+[20. 有效的括号 - 力扣（LeetCode）](https://leetcode.cn/problems/valid-parentheses/)
 
 将左括号压入栈中，然后用右括号进行匹配
 
