@@ -175,9 +175,70 @@ public:
 
 #### [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
+后序遍历序列的最后一个元素就是当前的中间节点
 
+以这个中间节点切割中序序列，则可以得到左子树序列和右子树序列，然后对后序序列进行切割
+
+再对左子树序列和右子树序列进行上述过程，直到到达叶子节点
 
 ```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private:
+    TreeNode* traversal (vector<int>& inorder, vector<int>& postorder) {
+        if (postorder.size() == 0) return NULL;
+        
+        // 后序为左右中
+        // 后序遍历数组最后一个元素，就是当前的中间节点
+        int rootValue = postorder[postorder.size() - 1];
+        TreeNode* root = new TreeNode(rootValue);
+
+        // 只有一个节点，则表示该节点为叶子节点
+        if (postorder.size() == 1) return root;
+
+        // 找到中序遍历的切割点
+        int delimiterIndex;
+        for (delimiterIndex = 0; delimiterIndex < inorder.size(); delimiterIndex++) {
+            if (inorder[delimiterIndex] == rootValue) break;
+        }
+
+        // 切割中序数组
+        // 左闭右开区间：[0, delimiterIndex)
+        vector<int> leftInorder(inorder.begin(), inorder.begin() + delimiterIndex);
+        // [delimiterIndex + 1, end)
+        vector<int> rightInorder(inorder.begin() + delimiterIndex + 1, inorder.end() );
+
+        // postorder序列里删除最后一个元素，然后再进行切割
+        postorder.resize(postorder.size() - 1);
+
+        // 切割后序数组
+        // 依然左闭右开，注意这里使用了左中序数组大小作为切割点
+        // [0, leftInorder.size)
+        vector<int> leftPostorder(postorder.begin(), postorder.begin() + leftInorder.size());
+        // [leftInorder.size(), end)
+        vector<int> rightPostorder(postorder.begin() + leftInorder.size(), postorder.end());
+
+        root->left = traversal(leftInorder, leftPostorder);
+        root->right = traversal(rightInorder, rightPostorder);
+
+        return root;
+    }
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        if (inorder.size() == 0 || postorder.size() == 0) return NULL;
+        return traversal(inorder, postorder);
+    }
+};
 
 ```
 
